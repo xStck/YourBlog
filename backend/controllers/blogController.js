@@ -50,7 +50,7 @@ export const updateBlog = async (req, res, next) => {
     }
 
     if (!updatedBlog) {
-        return res.status(500).json({ message: "Niespodziewany błąd serwera!" })
+        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie wykonywania update bloga!" })
     }
 
     return res.status(200).json({ updatedBlog })
@@ -72,5 +72,21 @@ export const getBlogDetailsById = async (req, res, next) => {
     }
 
     return res.status(200).json({ blog });
+}
 
+export const deleteBlog = async (req, res, next) => {
+    const id = req.params.id;
+    let deletedBlog;
+
+    try {
+        deletedBlog = await Blog.findByIdAndRemove(id);
+    } catch (error) {
+        return console.log(error);
+    }
+
+    if (!deletedBlog) {
+        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie usuwania bloga!" });
+    }
+
+    return res.status(200).json({ message: "Poprawnie usunięto blog o id: " + id })
 }
