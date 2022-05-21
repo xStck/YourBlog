@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppBar, Box, Button, Toolbar, Typography, createTheme, Tabs, Tab } from '@mui/material';
 import { Link } from "react-router-dom";
 import { ThemeProvider } from '@emotion/react';
+import { useSelector } from "react-redux";
 
 const darkTheme = createTheme({
   palette: {
@@ -11,7 +12,7 @@ const darkTheme = createTheme({
 
 const Header = () => {
   const [value, setValue] = React.useState(0);
-
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -23,17 +24,24 @@ const Header = () => {
           <Typography variant="h3">YourBlog</Typography>
 
           <Box display="flex" marginLeft="auto">
-            <Tabs textColor="inherit" value={value} onChange={handleChange}>
-              <Tab LinkComponent={Link} to="/allblogs" label="Wszystkie blogi" sx={{ margin: 1 }} />
-              <Tab LinkComponent={Link} to="/userblogs" label="Moje Blogi" sx={{ margin: 1 }} />
-            </Tabs>
+            {!isLoggedIn && <>
+              <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zaloguj</Button>
+              <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zarejestruj</Button>
+            </>}
+            {isLoggedIn && (
+              <Button variant="outlined" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
+            )}
           </Box>
 
-          <Box display="flex" marginRight="auto" marginLeft="auto">
-            <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zaloguj</Button>
-            <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zarejestruj</Button>
-            <Button variant="outlined" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
-          </Box>
+
+          {isLoggedIn && (
+            <Box display="flex" marginLeft="auto" marginRight="auto">
+              <Tabs textColor="inherit" value={value} onChange={handleChange}>
+                <Tab LinkComponent={Link} to="/allblogs" label="Wszystkie blogi" sx={{ margin: 1 }} />
+                <Tab LinkComponent={Link} to="/userblogs" label="Moje Blogi" sx={{ margin: 1 }} />
+              </Tabs>
+            </Box>
+          )}
 
         </Toolbar>
       </AppBar>
