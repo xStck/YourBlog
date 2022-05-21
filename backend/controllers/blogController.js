@@ -98,7 +98,9 @@ export const deleteBlog = async (req, res, next) => {
     let deletedBlog;
 
     try {
-        deletedBlog = await Blog.findByIdAndRemove(id);
+        deletedBlog = await Blog.findByIdAndRemove(id).populate('user');
+        await deletedBlog.user.userBlogs.pull(deletedBlog);
+        await deletedBlog.user.save();
     } catch (error) {
         return console.log(error);
     }
