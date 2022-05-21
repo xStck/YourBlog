@@ -1,5 +1,5 @@
-import User from "../model/User";
-import bcrypt from "bcryptjs";
+import User from '../model/User';
+import bcrypt from 'bcryptjs';
 
 export const getUsers = async (req, res, next) => {
     let users;
@@ -70,10 +70,10 @@ export const logIn = async (req, res, next) => {
         user.password
     )
 
-    if(!validPassword){
+    if (!validPassword) {
         return res.status(401).json({ message: " Błędny email lub hasło!" })
     }
 
-    return res.status(200).json({message: "Zalogowano"})
-        
+    return res.status(200).json({ message: "Zalogowano" })
+
 }

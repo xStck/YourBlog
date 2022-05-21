@@ -1,12 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose'
-import router from './routes/userRoutes';
+import userRouter from './routes/userRoutes';
+import blogRouter from './routes/blogRoutes';
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json());
-app.use("/api/user",router);
+app.use("/api/user", userRouter);
+app.use("/api/blog", blogRouter);
+
 
 mongoose.connect(
     'mongodb+srv://student:student@yourblog.lv2og.mongodb.net/?retryWrites=true&w=majority'
