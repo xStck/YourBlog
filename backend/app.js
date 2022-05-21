@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose'
 import router from './routes/userRoutes';
+
 const app = express()
 const PORT = process.env.PORT || 3000
 
@@ -12,7 +13,3 @@ mongoose.connect(
 ).then(() => app.listen(PORT))
     .then(() => console.log(`Połączono z bazą danych. Server działa na porcie: ${PORT}`))
     .catch((error) => console.log(error))
-
-
-
-
