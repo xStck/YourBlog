@@ -13,10 +13,15 @@ const userSchema = new Schema({
         unique: true,
         required: true
     },
-    password:{
+    password: {
         type: String,
         required: true,
         minLength: 8
-    }
+    },
+    userBlogs: [{
+        type: mongoose.Types.ObjectId,
+        ref: "Blog",
+        required: true
+    }]
 })
 export default mongoose.model("User", userSchema)

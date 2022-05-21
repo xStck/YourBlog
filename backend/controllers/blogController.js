@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import Blog from '../model/Blog';
+import User from '../model/User';
 
 export const getBlogs = async (req, res, next) => {
     let blogs;
@@ -18,6 +20,17 @@ export const getBlogs = async (req, res, next) => {
 
 export const addNewBlog = async (req, res, next) => {
     const { title, description, image, user } = req.body;
+    let registeredUser;
+
+    try {
+        registeredUser = await User.findById(user);
+    } catch (error) {
+        return console.log(error);
+    }
+
+    if (!registeredUser) {
+        return res.status(400).json({ message: "Nie znaleziono użytkownika o podanym id" });
+    }
 
     const newBlog = new Blog({
         title,
@@ -27,9 +40,15 @@ export const addNewBlog = async (req, res, next) => {
     });
 
     try {
-        await newBlog.save();
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await newBlog.save({ session });
+        registeredUser.userBlogs.push(newBlog);
+        await registeredUser.save({ session });
+        await session.commitTransaction();
     } catch (error) {
-        return console.log(error);
+        console.log(error);
+        return res.session(500).json({ message: "Nieoczekiwany błąd serwera w trakcie dodawania bloga" })
     }
 
     return res.status(200).json({ newBlog });
