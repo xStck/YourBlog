@@ -93,6 +93,23 @@ export const getBlogDetailsById = async (req, res, next) => {
     return res.status(200).json({ blog });
 }
 
+export const getUserBlogs = async (req, res, next) => {
+    const userId = req.params.id;
+    let specificUserBlogs;
+
+    try{
+        specificUserBlogs = await User.findById(userId).populate("userBlogs");
+    }catch(error){
+        return console.log(error);
+    }
+
+    if(!specificUserBlogs){
+        return res.status(404).json({ message: "Nie znaleziono blogów użytkownika o id " + userId});
+    }
+
+    return res.status(200).json({userAndHisBlogs: specificUserBlogs});
+}
+
 export const deleteBlog = async (req, res, next) => {
     const id = req.params.id;
     let deletedBlog;
