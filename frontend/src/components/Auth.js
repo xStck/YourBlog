@@ -5,7 +5,7 @@ import axios from "axios";
 const Auth = () => {
   const [isSignedUp, setisSignedUp] = useState(false)
   const [userInputs, setuserInputs] = useState({
-    name: "",
+    userName: "",
     email: "",
     password: ""
   })
@@ -21,11 +21,16 @@ const Auth = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(userInputs);
-    sendAuthRequest()
+    if (!isSignedUp) {
+      sendAuthRequest().then(responseData => console.log(responseData));
+    } else {
+      sendAuthRequest("signup").then(responseData => console.log(responseData));
+    }
   }
 
-  const sendAuthRequest = async() => {
-    const response = await axios.post("http://localhost:8080/api/user/login", {
+  const sendAuthRequest = async (type = "login") => {
+    const response = await axios.post(`http://localhost:8080/api/user/${type}`, {
+      userName: userInputs.userName,
       email: userInputs.email,
       password: userInputs.password
     }).catch(error => console.log(error));
@@ -51,7 +56,7 @@ const Auth = () => {
         >
           <Typography variant="h3">{isSignedUp ? "Zarejestruj się" : "Zaloguj się"}</Typography>
           {isSignedUp &&
-            <TextField name="name" onChange={handleChange} value={userInputs.name} placeholder="Imię" margin="normal" />
+            <TextField name="userName" onChange={handleChange} value={userInputs.userName} placeholder="Imię" margin="normal" />
           }
           <TextField name="email" onChange={handleChange} value={userInputs.email} placeholder="Email" type={"email"} margin="normal" />
           <TextField name="password" onChange={handleChange} value={userInputs.password} placeholder="Hasło" type={"password"} margin="normal" />
