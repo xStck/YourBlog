@@ -34,7 +34,7 @@ const Auth = () => {
     } else {
       sendAuthRequest("signup")
         .then(responseData => localStorage
-          .setItem("userId", responseData.loggedUser._id))
+          .setItem("userId", responseData.newUser._id))
         .then(() => dispatcher(authActions.login()))
         .then(() => navigator("/allblogs"));
     }
