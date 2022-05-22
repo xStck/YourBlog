@@ -26,9 +26,17 @@ const Auth = () => {
     event.preventDefault();
     console.log(userInputs);
     if (!isSignedUp) {
-      sendAuthRequest().then(()=>dispatcher(authActions.login())).then(() => navigator("/allblogs")).then(responseData => console.log(responseData));
+      sendAuthRequest()
+        .then(responseData => localStorage
+          .setItem("userId", responseData.loggedUser._id))
+        .then(() => dispatcher(authActions.login()))
+        .then(() => navigator("/allblogs"));
     } else {
-      sendAuthRequest("signup").then(()=>dispatcher(authActions.login())).then(() => navigator("/allblogs")).then(responseData => console.log(responseData));
+      sendAuthRequest("signup")
+        .then(responseData => localStorage
+          .setItem("userId", responseData.loggedUser._id))
+        .then(() => dispatcher(authActions.login()))
+        .then(() => navigator("/allblogs"));
     }
   }
 

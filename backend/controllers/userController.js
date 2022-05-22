@@ -75,6 +75,6 @@ export const logIn = async (req, res, next) => {
         return res.status(401).json({ message: " Błędny email lub hasło!" })
     }
 
-    return res.status(200).json({ message: "Zalogowano" })
+    return res.status(200).json({ message: "Zalogowano", loggedUser: user })
 
 }
