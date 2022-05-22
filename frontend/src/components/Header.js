@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { AppBar, Box, Button, Toolbar, Typography, createTheme, Tabs, Tab } from '@mui/material';
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { ThemeProvider } from '@emotion/react';
 import { useSelector } from "react-redux";
+import { authActions } from '../store';
 
 const darkTheme = createTheme({
   palette: {
@@ -11,6 +13,7 @@ const darkTheme = createTheme({
 });
 
 const Header = () => {
+  const dispatcher = useDispatch();
   const [value, setValue] = React.useState(0);
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const handleChange = (event, newValue) => {
@@ -40,7 +43,7 @@ const Header = () => {
               </>
             }
             {isLoggedIn && (
-              <Button variant="outlined" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
+              <Button variant="outlined" onClick={() => dispatcher(authActions.logout())} LinkComponent = {Link} to="/auth" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
             )
             }
           </Box>

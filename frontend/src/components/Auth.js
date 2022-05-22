@@ -1,15 +1,19 @@
-import { TextField, Typography, Box, Button } from '@mui/material'
-import React, { useState } from 'react'
+import { TextField, Typography, Box, Button } from '@mui/material';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import axios from "axios";
+import { authActions } from "../store";
+import { useNavigate } from "react-router-dom"
 
 const Auth = () => {
+  const dispatcher = useDispatch();
+  const navigator = useNavigate()
   const [isSignedUp, setisSignedUp] = useState(false)
   const [userInputs, setuserInputs] = useState({
     userName: "",
     email: "",
     password: ""
   })
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setuserInputs((previousState) => ({
@@ -22,9 +26,9 @@ const Auth = () => {
     event.preventDefault();
     console.log(userInputs);
     if (!isSignedUp) {
-      sendAuthRequest().then(responseData => console.log(responseData));
+      sendAuthRequest().then(()=>dispatcher(authActions.login())).then(() => navigator("/allblogs")).then(responseData => console.log(responseData));
     } else {
-      sendAuthRequest("signup").then(responseData => console.log(responseData));
+      sendAuthRequest("signup").then(()=>dispatcher(authActions.login())).then(() => navigator("/allblogs")).then(responseData => console.log(responseData));
     }
   }
 
