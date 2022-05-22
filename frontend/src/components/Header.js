@@ -23,17 +23,6 @@ const Header = () => {
         <Toolbar>
           <Typography variant="h3">YourBlog</Typography>
 
-          <Box display="flex" marginLeft="auto">
-            {!isLoggedIn && <>
-              <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zaloguj</Button>
-              <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zarejestruj</Button>
-            </>}
-            {isLoggedIn && (
-              <Button variant="outlined" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
-            )}
-          </Box>
-
-
           {isLoggedIn && (
             <Box display="flex" marginLeft="auto" marginRight="auto">
               <Tabs textColor="inherit" value={value} onChange={handleChange}>
@@ -42,6 +31,19 @@ const Header = () => {
               </Tabs>
             </Box>
           )}
+
+          <Box display="flex" marginLeft="auto">
+            {!isLoggedIn &&
+              <>
+                <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zaloguj</Button>
+                <Button LinkComponent={Link} to="/auth" variant="outlined" sx={{ margin: 1, color: 'white' }} >Zarejestruj</Button>
+              </>
+            }
+            {isLoggedIn && (
+              <Button variant="outlined" sx={{ margin: 1, color: 'white' }} >Wyloguj</Button>
+            )
+            }
+          </Box>
 
         </Toolbar>
       </AppBar>
