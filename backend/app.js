@@ -2,9 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose'
 import userRouter from './routes/userRoutes';
 import blogRouter from './routes/blogRoutes';
+import cors from "cors";
 
 const app = express()
-const PORT = process.env.PORT || 3000
+app.use(cors());
+const PORT = process.env.PORT || 8080
 
 app.use(express.json());
 app.use("/api/user", userRouter);
