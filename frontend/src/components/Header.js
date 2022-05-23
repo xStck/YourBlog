@@ -31,6 +31,7 @@ const Header = () => {
               <Tabs textColor="inherit" value={value} onChange={handleChange}>
                 <Tab LinkComponent={Link} to="/allblogs" label="Wszystkie blogi" sx={{ margin: 1 }} />
                 <Tab LinkComponent={Link} to="/userblogs" label="Moje Blogi" sx={{ margin: 1 }} />
+                <Tab LinkComponent={Link} to="/allblogs/add" label="Dodaj blog" sx={{ margin: 1 }} />
               </Tabs>
             </Box>
           )}
