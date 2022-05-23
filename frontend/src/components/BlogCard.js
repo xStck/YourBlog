@@ -8,21 +8,23 @@ import { useNavigate } from 'react-router-dom';
 
 const BlogCard = ({ title, description, image, user, isUser, id }) => {
     const navigator = useNavigate()
+
     const handleEdit = (event) => {
         navigator(`/userblogs/${id}`);
     }
-    const handleDelete = (event) => {
-       
-    }
     
+    const handleDelete = (event) => {
+
+    }
+
     return (
         <div> <Card sx={{ margin: "auto", mt: 2, width: "50%", boxShadow: "5px 5px 10px #000" }}>
             {isUser && (
                 <Box display="flex" >
-                    <IconButton onClick = {handleEdit} sx = {{marginLeft: "auto"}}>
+                    <IconButton onClick={handleEdit} sx={{ marginLeft: "auto" }}>
                         <ModeEditOutlineIcon />
                     </IconButton>
-                    <IconButton onClick = {handleDelete} >
+                    <IconButton onClick={handleDelete} >
                         <DeleteOutlineIcon />
                     </IconButton>
                 </Box>
