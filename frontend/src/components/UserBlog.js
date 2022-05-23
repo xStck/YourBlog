@@ -20,10 +20,16 @@ const UserBlog = () => {
   return (
     <div>
       {userAndHisBlogs && userAndHisBlogs.userBlogs && userAndHisBlogs.userBlogs.map((singleBlog, index) => (
-        <BlogCard key={index}
-         title={singleBlog.title} description={singleBlog.description} image={singleBlog.image} user={userAndHisBlogs.userName} 
-         />
-         
+        <BlogCard
+          key={index}
+          id = {singleBlog._id}
+          isUser={true}
+          title={singleBlog.title}
+          description={singleBlog.description}
+          image={singleBlog.image}
+          user={userAndHisBlogs.userName}
+        />
+
       ))}
     </div>
   )

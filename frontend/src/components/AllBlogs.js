@@ -15,7 +15,14 @@ const AllBlogs = () => {
   return (
     <div>
       {allBlogs && allBlogs.map((singleBlog, index) => (
-        <BlogCard title={singleBlog.title} description={singleBlog.description} image={singleBlog.image} user = {singleBlog.user.userName}/>
+        <BlogCard
+        id = {singleBlog._id}
+        isUser={localStorage.getItem("userId") === singleBlog.user._id} 
+        title={singleBlog.title} 
+        description={singleBlog.description} 
+        image={singleBlog.image} 
+        user = {singleBlog.user.userName}
+        />
       ))}
       </div>
   )
