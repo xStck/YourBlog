@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 export const getUsers = async (req, res) => {
     let users;
-    
     try {
         users = await User.find();
     } catch (error) {
@@ -42,22 +41,18 @@ export const signUp = async (req, res) => {
         blogs:[],
     });
 
-    const token = jwt.sign({email: newUser.email, id: newUser._id}, "secretToken", {expiresIn: "7d"});
-
     try {
         await newUser.save();
     } catch (error) {
         return console.log(error);
     }
 
-    return res.status(201).json({ newUser, token });
+    return res.status(201).json({ newUser });
 }
 
 export const logIn = async (req, res) => {
     const { email, password } = req.body;
-
     let existingUser;
-
     try {
         existingUser = await User.findOne({ email });
     } catch (err) {
@@ -77,9 +72,8 @@ export const logIn = async (req, res) => {
         return res.status(400).json({ message: " Błędny email lub hasło!" })
     }
 
-    const token = jwt.sign({email: existingUser.email, id: existingUser._id}, "secretToken", {expiresIn: "7d"})
-
-    return res.status(200).json({ message: "Zalogowano", loggedUser: existingUser,  token})
+    return res.status(200).json({ message: "Zalogowano", loggedUser: existingUser})
 
 }
+
 

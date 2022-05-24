@@ -3,11 +3,12 @@ import mongoose from 'mongoose'
 import userRouter from './routes/userRoutes';
 import blogRouter from './routes/blogRoutes';
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express()
-app.use(cors());
-
 const PORT = process.env.PORT || 8080
+app.use(cors());
+app.use(cookieParser());
 
 app.use(express.json());
 app.use("/api/user", userRouter);
