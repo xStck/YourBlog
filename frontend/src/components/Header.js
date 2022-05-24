@@ -26,7 +26,7 @@ const Header = () => {
       setValue(0);
     }else if(whichTab === "/userblogs"){
       setValue(1);
-    }else{
+    }else if(whichTab === "/allblogs/add"){
       setValue(2);
     }
   }, [whichTab])

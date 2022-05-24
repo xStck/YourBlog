@@ -17,7 +17,7 @@ const BlogDetail = () => {
     }));
   };
 
-  const sendUpdateBlogRequest = async() => {
+  const sendUpdateBlogRequest = async () => {
     const response = await axios.put(`http://localhost:8080/api/blog/updateblog/${id}`, {
       title: userInputs.title,
       description: userInputs.description,
@@ -28,7 +28,7 @@ const BlogDetail = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    sendUpdateBlogRequest().then(()=>navigator("/userblogs"))
+    sendUpdateBlogRequest().then(() => navigator("/userblogs"))
   };
 
   const fetchDetails = async () => {
@@ -61,8 +61,8 @@ const BlogDetail = () => {
             marginTop={5}
             borderRadius={10}
             width={"80%"}>
-            <Typography variant="h3" fontWeight={"bold"} padding={3} textAlign="center">
-              Dodaj Bloga
+            <Typography variant="h3" padding={3} textAlign="center">
+              Edycja bloga
             </Typography>
             <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }} >Tytuł</InputLabel>
             <TextField required type="text" placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />

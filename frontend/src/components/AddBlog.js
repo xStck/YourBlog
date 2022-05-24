@@ -52,7 +52,7 @@ const AddBlog = () => {
           marginTop={5}
           borderRadius={10}
           width={"80%"}>
-          <Typography variant="h3" fontWeight={"bold"} padding={3} textAlign="center">
+          <Typography variant="h3" padding={3} textAlign="center">
             Dodaj Bloga
           </Typography>
           <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }} >Tytuł</InputLabel>
