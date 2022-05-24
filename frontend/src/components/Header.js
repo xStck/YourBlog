@@ -14,7 +14,7 @@ const darkTheme = createTheme({
 
 const Header = () => {
   const dispatcher = useDispatch();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const handleChange = (event, newValue) => {
     setValue(newValue);

@@ -5,17 +5,27 @@ import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
 const BlogCard = ({ title, description, image, user, isUser, id }) => {
-    const navigator = useNavigate()
+    const navigator = useNavigate();
 
     const handleEdit = (event) => {
         navigator(`/userblogs/${id}`);
-    }
-    
-    const handleDelete = (event) => {
+    };
 
-    }
+    const sendDeleteRequest = async () => {
+        const response = await axios.delete(`http://localhost:8080/api/blog/${id}`)
+            .catch(error => console.log(error));
+
+        const responseData = await response.data;
+        return responseData;
+    };
+
+    const handleDelete = () => {
+        sendDeleteRequest()
+            .then(() => window.location.reload())
+    };
 
     return (
         <div> <Card sx={{ margin: "auto", mt: 2, width: "50%", boxShadow: "5px 5px 10px #000" }}>
@@ -25,7 +35,7 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                         <ModeEditOutlineIcon />
                     </IconButton>
                     <IconButton onClick={handleDelete} >
-                        <DeleteOutlineIcon />
+                        <DeleteOutlineIcon color="error"/>
                     </IconButton>
                 </Box>
             )}
@@ -36,15 +46,17 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                     </Avatar>
                 }
                 title={title}
-                subheader="September 14, 2016"
             />
             <CardMedia
                 component="img"
                 height="194"
                 image={image}
-                alt="Paella dish"
+                alt="ImageURL"
             />
+
             <CardContent>
+                <hr />
+                <br />
                 <Typography variant="body2" color="text.secondary">
                     <b>{user}: </b>{description}
                 </Typography>
