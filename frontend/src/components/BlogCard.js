@@ -23,8 +23,7 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
     };
 
     const handleDelete = () => {
-        sendDeleteRequest()
-            .then(() => window.location.reload())
+        sendDeleteRequest().then(() => window.location.reload())
     };
 
     return (
@@ -47,13 +46,14 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                 }
                 title={title}
             />
+            {image &&
             <CardMedia
                 component="img"
                 height="194"
                 image={image}
-                alt="ImageURL"
+                alt={image}
             />
-
+            }
             <CardContent>
                 <hr />
                 <br />

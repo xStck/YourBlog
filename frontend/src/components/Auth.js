@@ -3,13 +3,12 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { authActions } from "../store";
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 const Auth = () => {
   const dispatcher = useDispatch();
   const navigator = useNavigate()
-  const [isSignedUp, setisSignedUp] = useState(false)
-
+  var loginOrSignUp = useLocation().pathname;
   const [userInputs, setuserInputs] = useState({
     userName: "",
     email: "",
@@ -26,22 +25,22 @@ const Auth = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!isSignedUp) {
-      sendAuthRequest()
+    if (loginOrSignUp == "/login") {
+      sendAuthRequest("login")
         .then(responseData => localStorage
           .setItem("userId", responseData.loggedUser._id))
         .then(() => dispatcher(authActions.login()))
         .then(() => navigator("/allblogs"));
     } else {
       sendAuthRequest("signup")
-        .then(responseData => localStorage
-          .setItem("userId", responseData.newUser._id))
+        .then(responseData => localStorage.setItem("userId", responseData.newUser._id))
         .then(() => dispatcher(authActions.login()))
         .then(() => navigator("/allblogs"));
     }
   };
 
-  const sendAuthRequest = async (type = "login") => {
+
+  const sendAuthRequest = async (type = loginOrSignUp) => {
     const response = await axios.post(`http://localhost:8080/api/user/${type}`, {
       userName: userInputs.userName,
       email: userInputs.email,
@@ -67,14 +66,13 @@ const Auth = () => {
           marginTop={5}
           borderRadius={10}
         >
-          <Typography variant="h3">{isSignedUp ? "Zarejestruj się" : "Zaloguj się"}</Typography>
-          {isSignedUp &&
-            <TextField name="userName" onChange={handleChange} value={userInputs.userName} placeholder="Imię" margin="normal" variant="standard" />
+          <Typography variant="h3">{loginOrSignUp =="/signup" ? "Zarejestruj się" : "Zaloguj się"}</Typography>
+          {loginOrSignUp == "/signup" &&
+            <TextField required name="userName" type="text" onChange={handleChange} value={userInputs.userName} placeholder="Imię" margin="normal" variant="standard" />
           }
-          <TextField name="email" onChange={handleChange} value={userInputs.email} placeholder="Email" type={"email"} margin="normal" variant="standard" />
-          <TextField name="password" onChange={handleChange} value={userInputs.password} placeholder="Hasło" type={userInputs.showPassword ? 'text' : 'password'} margin="normal" variant="standard" />
-          <Button type="submit" variant="contained" mode="dark" sx={{ margin: 1, background: "black" }} >{isSignedUp ? "Zarejestruj się" : "Zaloguj się"}</Button>
-          <Button onClick={() => setisSignedUp(!isSignedUp)} variant="contained" sx={{ margin: 1, background: "black" }} >{isSignedUp ? "Masz konto? Zaloguj się." : "Nie masz konta? Zarejestruj się."}</Button>
+          <TextField required name="email" onChange={handleChange} value={userInputs.email} placeholder="Email" type={"email"} margin="normal" variant="standard" />
+          <TextField required name="password" onChange={handleChange} value={userInputs.password} placeholder="Hasło" type='password' margin="normal" variant="standard" />
+          <Button type="submit" variant="contained" mode="dark" sx={{ margin: 1, background: "black" }} >{loginOrSignUp == "/signup" ? "Zarejestruj się" : "Zaloguj się"}</Button>
         </Box>
       </form>
     </div>

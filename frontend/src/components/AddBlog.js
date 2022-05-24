@@ -3,8 +3,12 @@ import { Box } from '@mui/system'
 import React, { useState } from 'react'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../store';
 
 const AddBlog = () => {
+  const dispatcher = useDispatch();
+
   const navigator = useNavigate();
   const [userInputs, setuserInputs] = useState({
     title: "",
@@ -34,7 +38,6 @@ const AddBlog = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(userInputs);
     sendAddBlogRequest().then(() => navigator("/userblogs"));
   };
 
@@ -50,16 +53,16 @@ const AddBlog = () => {
           marginTop={5}
           borderRadius={10}
           width={"80%"}>
-          <Typography  variant="h3" fontWeight={"bold"} padding={3} textAlign="center">
+          <Typography variant="h3" fontWeight={"bold"} padding={3} textAlign="center">
             Dodaj Bloga
           </Typography>
           <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }} >Tytuł</InputLabel>
-          <TextField placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />
+          <TextField required type="text" placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />
           <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }}>Link do obrazka</InputLabel>
-          <TextField placeholder="Link do obrazka" onChange={handleChange} margin="normal" name="image" value={userInputs.image} variant="outlined" />
+          <TextField  type="text" placeholder="Link do obrazka" onChange={handleChange} margin="normal" name="image" value={userInputs.image} variant="outlined" />
           <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }}>Opis</InputLabel>
-          <TextField placeholder="Opis" onChange={handleChange} margin="normal" name="description" value={userInputs.description} variant="outlined" />
-          <Button type="submit" variant="contained" mode="dark" sx={{ margin: 1, background: "black" }}>Dodaj</Button>
+          <TextField  required type="text" placeholder="Opis" onChange={handleChange} margin="normal" name="description" value={userInputs.description} variant="outlined" />
+          <Button onClick = {()=>dispatcher(authActions.changeTab1)} type="submit" variant="contained" mode="dark" sx={{ margin: 1, background: "black" }}>Dodaj</Button>
         </Box>
       </form>
     </div>

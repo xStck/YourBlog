@@ -1,7 +1,7 @@
 import './App.css';
 import Header from "./components/Header";
-import React, { useEffect } from "react";
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Auth from "./components/Auth";
 import AllBlogs from "./components/AllBlogs";
 import UserBlog from "./components/UserBlog";
@@ -20,14 +20,25 @@ function App() {
   },[dispatcher])
   return <React.Fragment>
     <header>
-      <Header />
+      <Header/>
     </header>
     <main>
       <Routes>
         {!isLoggedIn ? (
-          <Route path="/auth" element={<Auth />} />
+          <>
+          <Route path="/" element={<Navigate replace to="/login" />} />
+          <Route path="/login" element={<Auth />} />
+          <Route path="/signup" element={<Auth />} />
+          <Route path="/allblogs" element={<Navigate replace to="/login" />} />
+          <Route path="/allblogs/add" element={<Navigate replace to="/login" />} />
+          <Route path="/userblogs" element={<Navigate replace to="/login" />} />
+          <Route path="/userblogs/:id" element={<Navigate replace to="/login" />} />
+          </>
         ) : (
           <>
+            <Route path="/" element={<Navigate replace to="/allblogs" />} />
+            <Route path="/login" element={<Navigate replace to="/allblogs" />} />
+            <Route path="/signup" element={<Navigate replace to="/allblogs" />}  />
             <Route path="/allblogs" element={<AllBlogs />} />
             <Route path="/allblogs/add" element={<AddBlog />} />
             <Route path="/userblogs" element={<UserBlog />} />
