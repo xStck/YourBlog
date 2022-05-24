@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Blog from '../model/Blog';
 import User from '../model/User';
 
-export const getBlogs = async (req, res, next) => {
+export const getBlogs = async (req, res) => {
     let blogs;
 
     try {
@@ -18,7 +18,7 @@ export const getBlogs = async (req, res, next) => {
     return res.status(200).json({ blogs });
 }
 
-export const addNewBlog = async (req, res, next) => {
+export const addNewBlog = async (req, res) => {
     const { title, description, image, user } = req.body;
     let registeredUser;
 
@@ -54,7 +54,7 @@ export const addNewBlog = async (req, res, next) => {
     return res.status(200).json({ newBlog });
 }
 
-export const updateBlog = async (req, res, next) => {
+export const updateBlog = async (req, res) => {
     const updatedBlogId = req.params.id;
     const { title, description } = req.body;
     let updatedBlog;
@@ -76,7 +76,7 @@ export const updateBlog = async (req, res, next) => {
 
 }
 
-export const getBlogDetailsById = async (req, res, next) => {
+export const getBlogDetailsById = async (req, res) => {
     const blogId = req.params.id;
     let blog;
 
@@ -93,7 +93,7 @@ export const getBlogDetailsById = async (req, res, next) => {
     return res.status(200).json({ blog });
 }
 
-export const getUserBlogs = async (req, res, next) => {
+export const getUserBlogs = async (req, res) => {
     const userId = req.params.id;
     let specificUserBlogs;
 
@@ -110,7 +110,7 @@ export const getUserBlogs = async (req, res, next) => {
     return res.status(200).json({userAndHisBlogs: specificUserBlogs});
 }
 
-export const deleteBlog = async (req, res, next) => {
+export const deleteBlog = async (req, res) => {
     const id = req.params.id;
     let deletedBlog;
 

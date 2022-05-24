@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import User from '../model/User';
+import jwt from "jsonwebtoken";
 
-export const getUsers = async (req, res, next) => {
+export const getUsers = async (req, res) => {
     let users;
     
     try {
@@ -16,18 +17,18 @@ export const getUsers = async (req, res, next) => {
     return res.status(200).json({ users });
 }
 
-export const signUp = async (req, res, next) => {
+export const signUp = async (req, res) => {
     const { userName, email, password } = req.body;
 
-    let checkUser;
+    let existingUser;
 
     try {
-        checkUser = await User.findOne({ email });
+        existingUser = await User.findOne({ email });
     } catch (err) {
         return console.log(err);
     }
 
-    if (checkUser) {
+    if (existingUser) {
         return res.status(409).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
     }
 
@@ -50,31 +51,33 @@ export const signUp = async (req, res, next) => {
     return res.status(201).json({ newUser });
 }
 
-export const logIn = async (req, res, next) => {
+export const logIn = async (req, res) => {
     const { email, password } = req.body;
 
-    let user;
+    let existingUser;
 
     try {
-        user = await User.findOne({ email });
+        existingUser = await User.findOne({ email });
     } catch (err) {
         return console.log(err);
     }
 
-    if (!user) {
+    if (!existingUser) {
         return res.status(404).json({ message: "Użytkownik o podanym adresie e-mail nie istnieje" });
     }
 
     const validPassword = await bcrypt.compare(
-        req.body.password,
-        user.password
+        password,
+        existingUser.password
     )
 
     if (!validPassword) {
-        return res.status(401).json({ message: " Błędny email lub hasło!" })
+        return res.status(400).json({ message: " Błędny email lub hasło!" })
     }
 
-    return res.status(200).json({ message: "Zalogowano", loggedUser: user })
+    const token = jwt.sign({email: existingUser.email, id: existingUser._id}, "secretToken", {expiresIn: "7d"})
+
+    return res.status(200).json({ message: "Zalogowano", loggedUser: existingUser,  token})
 
 }
 
