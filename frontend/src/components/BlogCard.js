@@ -4,11 +4,12 @@ import React from 'react'
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 const BlogCard = ({ title, description, image, user, isUser, id }) => {
     const navigator = useNavigate();
+    const whichTab = useLocation().pathname;
 
     const handleEdit = (event) => {
         navigator(`/userblogs/${id}`);
@@ -23,7 +24,7 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
     };
 
     const handleDelete = () => {
-        sendDeleteRequest().then(() => window.location.reload())
+        sendDeleteRequest().then(() => window.location.reload()).then(()=>console.log(whichTab)).then(()=>navigator(`${whichTab}`))
     };
 
     return (

@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     userName: {
         type: String,
-        unique: true,
         required: true
     },
     email: {
@@ -23,4 +22,8 @@ const userSchema = new Schema({
         required: true
     }]
 })
+
 export default mongoose.model("User", userSchema)
+
+
+

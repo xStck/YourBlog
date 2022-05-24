@@ -1,9 +1,9 @@
-import User from '../model/User';
 import bcrypt from 'bcryptjs';
+import User from '../model/User';
 
 export const getUsers = async (req, res, next) => {
     let users;
-
+    
     try {
         users = await User.find();
     } catch (error) {
@@ -13,7 +13,6 @@ export const getUsers = async (req, res, next) => {
     if (!users) {
         return res.status(404).json({ message: "Nie znaleziono żadnych użytkowników." });
     }
-
     return res.status(200).json({ users });
 }
 
@@ -29,7 +28,7 @@ export const signUp = async (req, res, next) => {
     }
 
     if (checkUser) {
-        return res.status(404).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
+        return res.status(409).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT))
@@ -78,3 +77,4 @@ export const logIn = async (req, res, next) => {
     return res.status(200).json({ message: "Zalogowano", loggedUser: user })
 
 }
+
