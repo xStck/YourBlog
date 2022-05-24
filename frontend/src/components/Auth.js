@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 const Auth = () => {
   const dispatcher = useDispatch();
-  const navigator = useNavigate()
+  const navigator = useNavigate();
   var loginOrSignUp = useLocation().pathname;
   const [userInputs, setuserInputs] = useState({
     userName: "",
@@ -27,13 +27,19 @@ const Auth = () => {
     event.preventDefault();
     if (loginOrSignUp == "/login") {
       sendAuthRequest("login")
-        .then(responseData => localStorage
-          .setItem("userId", responseData.loggedUser._id))
+        .then(responseData => {
+          localStorage.setItem("userId", responseData.loggedUser._id);
+          localStorage.setItem("token", responseData.token)
+        })
         .then(() => dispatcher(authActions.login()))
         .then(() => navigator("/allblogs"));
     } else {
       sendAuthRequest("signup")
-        .then(responseData => localStorage.setItem("userId", responseData.newUser._id))
+        .then(responseData => 
+          {
+            localStorage.setItem("userId", responseData.newUser._id)
+            localStorage.setItem("token", responseData.token)
+          })
         .then(() => dispatcher(authActions.login()))
         .then(() => navigator("/allblogs"));
     }
@@ -46,7 +52,6 @@ const Auth = () => {
       email: userInputs.email,
       password: userInputs.password
     }).catch(error => console.log(error));
-
     const responseData = await response.data;
     return responseData;
   };

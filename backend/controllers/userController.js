@@ -29,18 +29,20 @@ export const signUp = async (req, res) => {
     }
 
     if (existingUser) {
-        return res.status(409).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
+        return res.status(400).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT))
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-    const newUser = new User({
+    const newUser = await User.create({
         userName,
+        email,
         password: hashedPassword,
         blogs:[],
-        email
     });
+
+    const token = jwt.sign({email: newUser.email, id: newUser._id}, "secretToken", {expiresIn: "7d"});
 
     try {
         await newUser.save();
@@ -48,7 +50,7 @@ export const signUp = async (req, res) => {
         return console.log(error);
     }
 
-    return res.status(201).json({ newUser });
+    return res.status(201).json({ newUser, token });
 }
 
 export const logIn = async (req, res) => {
