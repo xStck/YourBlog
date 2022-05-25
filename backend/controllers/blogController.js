@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import Blog from '../model/Blog';
-import User from '../model/User';
+const mongoose = require('mongoose');
+const Blog = require("../model/Blog");
+const User = require("../model/User");
 
-export const getBlogs = async (req, res) => {
+const getBlogs = async (req, res) => {
     let blogs;
 
     try {
@@ -18,7 +18,7 @@ export const getBlogs = async (req, res) => {
     return res.status(200).json({ blogs });
 }
 
-export const addNewBlog = async (req, res) => {
+const addNewBlog = async (req, res) => {
     const { title, description, image, user } = req.body;
     let registeredUser;
 
@@ -54,7 +54,7 @@ export const addNewBlog = async (req, res) => {
     return res.status(200).json({ newBlog });
 }
 
-export const updateBlog = async (req, res) => {
+const updateBlog = async (req, res) => {
     const updatedBlogId = req.params.id;
     const { title, description } = req.body;
     let updatedBlog;
@@ -76,7 +76,7 @@ export const updateBlog = async (req, res) => {
 
 }
 
-export const getBlogDetailsById = async (req, res) => {
+const getBlogDetailsById = async (req, res) => {
     const blogId = req.params.id;
     let blog;
 
@@ -93,7 +93,7 @@ export const getBlogDetailsById = async (req, res) => {
     return res.status(200).json({ blog });
 }
 
-export const getUserBlogs = async (req, res) => {
+const getUserBlogs = async (req, res) => {
     const userId = req.params.id;
     let specificUserBlogs;
 
@@ -110,7 +110,7 @@ export const getUserBlogs = async (req, res) => {
     return res.status(200).json({userAndHisBlogs: specificUserBlogs});
 }
 
-export const deleteBlog = async (req, res) => {
+const deleteBlog = async (req, res) => {
     const id = req.params.id;
     let deletedBlog;
 
@@ -128,3 +128,10 @@ export const deleteBlog = async (req, res) => {
 
     return res.status(200).json({ message: "Poprawnie usunięto blog o id: " + id })
 }
+
+exports.getBlogs = getBlogs;
+exports.addNewBlog = addNewBlog;
+exports.updateBlog = updateBlog;
+exports.getBlogDetailsById = getBlogDetailsById;
+exports.getUserBlogs = getUserBlogs;
+exports.deleteBlog = deleteBlog;

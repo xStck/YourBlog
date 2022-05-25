@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import BlogCard from './BlogCard';
 import { Typography } from '@mui/material';
-
+axios.defaults.withCredentials = true
 const AllBlogs = () => {
   const [allBlogs, setAllBlogs] = useState()
   const [blogsExist, setblogsExist] = useState()
   const [text, setText] = useState("")
   const sendBlogsRequest = async () => {
-    const response = await axios.get("http://localhost:8080/api/blog").catch(error => console.log(error));
+    const response = await axios.get("http://localhost:8080/api/blog",{
+      withCredentials: true
+    }).catch(error => console.log(error));
     const responseData = await response.data;
     return responseData;
   }

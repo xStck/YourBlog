@@ -1,15 +1,14 @@
-import express from 'express';
-import mongoose from 'mongoose'
-import userRouter from './routes/userRoutes';
-import blogRouter from './routes/blogRoutes';
-import cors from "cors";
-import cookieParser from "cookie-parser";
+const express = require('express');
+const mongoose = require('mongoose');
+const userRouter = require('./routes/userRoutes');
+const blogRouter = require('./routes/blogRoutes');
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
-const app = express()
-const PORT = process.env.PORT || 8080
-app.use(cors());
+const app = express();
+app.use(cors({credentials: true, origin: "http://localhost:3000"}));
 app.use(cookieParser());
-
+const PORT = process.env.PORT || 8080
 app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
