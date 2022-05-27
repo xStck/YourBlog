@@ -100,8 +100,8 @@ const Header = () => {
             <Box display="flex" marginLeft="auto" marginRight="auto">
               <Tabs textColor="inherit" value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
                 <Tab LinkComponent={Link} to="/allblogs" label="Wszystkie blogi" sx={{ margin: 1 }} />
-                <Tab LinkComponent={Link} to="/userblogs" label="Moje Blogi" sx={{ margin: 1 }} />
-                <Tab LinkComponent={Link} to="/allblogs/add" label="Dodaj blog" sx={{ margin: 1 }} />
+                <Tab LinkComponent={Link} to="/userblogs" label="Moje blogi" sx={{ margin: 1 }} />
+                <Tab LinkComponent={Link} to="/allblogs/add" label="Dodaj bloga" sx={{ margin: 1 }} />
               </Tabs>
             </Box>
           )}

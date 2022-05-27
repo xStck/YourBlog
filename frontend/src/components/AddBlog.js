@@ -110,7 +110,7 @@ const AddBlog = () => {
           borderRadius={10}
           width={"80%"}>
           <Typography variant="h3" padding={3} textAlign="center">
-            Dodaj Bloga
+            Dodaj bloga
           </Typography>
           <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }} >Tytuł</InputLabel>
           <TextField type="text" placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />
