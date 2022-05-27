@@ -51,14 +51,17 @@ const Header = () => {
       setValue(2);
     }
 
+    if(!localStorage.getItem("userId") && isLoggedIn){
+      handleLogout();
+    }
+
     sendCheckTokenResponse().then(ifExpired => {
       console.log(ifExpired)
-      if(ifExpired == true){
+      if(ifExpired === true){
         dispatcher(authActions.logout());
-        window.localStorage.removeItem("userId");
       }
     })
-  }, [whichTab])
+  }, [whichTab, dispatcher, isLoggedIn])
 
 
   return (
