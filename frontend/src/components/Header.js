@@ -21,17 +21,40 @@ const Header = () => {
   const whichTab = useLocation().pathname;
 
   const sendLogOutRequest = async () => {
-    const response = await axios.post("http://localhost:8080/api/user/logout", null, { withCredentials: true })
-    if (response.status === 200) {
-      return response
+    try {
+      const response = await axios.post("http://localhost:8080/api/user/logout", null, { withCredentials: true });
+
+      if (response.status === 200) {
+        return response;
+      }
+
+      return new Error("Nie można się wylogować. Spróbuj ponownie");
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
     }
-    return new Error("Nie można się wylogować. Spróbuj ponownie")
   }
 
   const sendCheckTokenResponse = async () => {
-    const response = await axios.get("http://localhost:8080/api/user/checktokenexpired", { withCredentials: true })
-    const checkExpired = response.data.expired
-    return checkExpired
+    try {
+      const response = await axios.get("http://localhost:8080/api/user/checktokenexpired", { withCredentials: true });
+      const checkExpired = response.data.expired;
+
+      return checkExpired;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   }
 
   const handleChange = (event, newValue) => {
@@ -39,7 +62,8 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    sendLogOutRequest().then(() => dispatcher(authActions.logout()))
+    dispatcher(authActions.logout())
+    sendLogOutRequest()
   };
 
   useEffect(() => {
@@ -51,16 +75,17 @@ const Header = () => {
       setValue(2);
     }
 
-    if(!localStorage.getItem("userId") && isLoggedIn){
+    if (!localStorage.getItem("userId") && isLoggedIn) {
       handleLogout();
     }
 
-    sendCheckTokenResponse().then(ifExpired => {
-      console.log(ifExpired)
-      if(ifExpired === true){
-        dispatcher(authActions.logout());
-      }
-    })
+    if (isLoggedIn) {
+      sendCheckTokenResponse().then(ifExpired => {
+        if (ifExpired === true) {
+          dispatcher(authActions.logout());
+        }
+      })
+    }
   }, [whichTab, dispatcher, isLoggedIn])
 
 

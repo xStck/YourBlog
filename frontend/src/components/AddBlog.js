@@ -1,16 +1,17 @@
-import { Button, InputLabel, TextField, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useState } from 'react'
-import axios from "axios"
+import { Button, InputLabel, TextField, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import React, { useState } from 'react';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 const AddBlog = () => {
   const navigator = useNavigate();
-  const [correctTitle, setCorrectTitle] = useState(true)
-  const [correctDescription, setCorrectDescription] = useState(true)
-  const [correctImage, setCorrectImage] = useState(true)
-  var isCorrectValidation = false
+  const [correctTitle, setCorrectTitle] = useState(true);
+  const [correctDescription, setCorrectDescription] = useState(true);
+  const [correctImage, setCorrectImage] = useState(true);
+  var isCorrectValidation = false;
+
   const [userInputs, setuserInputs] = useState({
     title: "",
     description: "",
@@ -19,40 +20,46 @@ const AddBlog = () => {
 
   const isValidHttpUrl = (string) => {
     let url;
+
     try {
       url = new URL(string);
     } catch (_) {
       return false;
     }
+
     return url.protocol === "http:" || url.protocol === "https:";
-  }
+  };
 
   const validation = (values) => {
     const regexIsImage = /\.(jpg|jpeg|png|webp|avif|gif|svg)$/;
-    setCorrectTitle(true)
-    setCorrectDescription(true)
-    setCorrectImage(true)
-    isCorrectValidation = true
+    setCorrectTitle(true);
+    setCorrectDescription(true);
+    setCorrectImage(true);
+    isCorrectValidation = true;
+
     if (values.title.trim() === '') {
-      setCorrectTitle(false)
-      isCorrectValidation = false
+      setCorrectTitle(false);
+      isCorrectValidation = false;
     }
+
     if (values.description.trim() === '') {
-      setCorrectDescription(false)
-      isCorrectValidation = false
+      setCorrectDescription(false);
+      isCorrectValidation = false;
     }
-    if (values.image.trim() != '') {
+
+    if (values.image.trim() !== '') {
       if (!isValidHttpUrl(values.image) || !regexIsImage.test(values.image)) {
-        setCorrectImage(false)
+        setCorrectImage(false);
         isCorrectValidation = false;
       }
-    }else{
-      userInputs.image=''
+    } else {
+      userInputs.image = ''
     }
   }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
     setuserInputs((previousState) => ({
       ...previousState,
       [name]: value
@@ -60,19 +67,31 @@ const AddBlog = () => {
   };
 
   const sendAddBlogRequest = async () => {
-    const response = await axios.post("http://localhost:8080/api/blog/addnewblog", {
-      title: userInputs.title,
-      description: userInputs.description,
-      image: userInputs.image,
-      user: localStorage.getItem("userId")
-    }, { withCredentials: true }).catch(error => console.log(error));
-    const responseData = await response.data;
-    return responseData;
+    try {
+      const response = await axios.post("http://localhost:8080/api/blog/addnewblog", {
+        title: userInputs.title,
+        description: userInputs.description,
+        image: userInputs.image,
+        user: localStorage.getItem("userId")
+      }, { withCredentials: true });
+
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     validation(userInputs);
+
     if (isCorrectValidation) {
       sendAddBlogRequest().then(() => navigator("/userblogs"));
     }

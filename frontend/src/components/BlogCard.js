@@ -1,12 +1,12 @@
-import { Avatar, Card, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@mui/material'
-import { red } from '@mui/material/colors'
-import React from 'react'
+import { Avatar, Card, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@mui/material';
+import { red } from '@mui/material/colors';
+import React from 'react';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box } from '@mui/system';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 const BlogCard = ({ title, description, image, user, isUser, id }) => {
     const navigator = useNavigate();
@@ -17,17 +17,26 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
     };
 
     const sendDeleteRequest = async () => {
-        const response = await axios.delete(`http://localhost:8080/api/blog/${id}`, {
-            withCredentials: true
-          })
-            .catch(error => console.log(error));
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/blog/${id}`, {
+                withCredentials: true
+            });
 
-        const responseData = await response.data;
-        return responseData;
+            const responseData = await response.data;
+            return responseData;
+        } catch (error) {
+            if (
+                error.response &&
+                error.response.status >= 400 &&
+                error.response.status <= 500
+            ) {
+                window.alert(error.response.data.message)
+            }
+        }
     };
 
     const handleDelete = () => {
-        sendDeleteRequest().then(() => window.location.reload()).then(()=>console.log(whichTab)).then(()=>navigator(`${whichTab}`))
+        sendDeleteRequest().then(() => window.location.reload()).then(() => navigator(`${whichTab}`));
     };
 
     return (
@@ -38,7 +47,7 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                         <ModeEditOutlineIcon />
                     </IconButton>
                     <IconButton onClick={handleDelete} >
-                        <DeleteOutlineIcon color="error"/>
+                        <DeleteOutlineIcon color="error" />
                     </IconButton>
                 </Box>
             )}
@@ -51,12 +60,12 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                 title={title}
             />
             {image &&
-            <CardMedia
-                component="img"
-                height="194"
-                image={image}
-                alt={image}
-            />
+                <CardMedia
+                    component="img"
+                    height="194"
+                    image={image}
+                    alt={image}
+                />
             }
             <CardContent>
                 <hr />
@@ -65,7 +74,8 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
                     <b>{user}: </b>{description}
                 </Typography>
             </CardContent>
-        </Card></div>
+        </Card>
+        </div>
     )
 }
 

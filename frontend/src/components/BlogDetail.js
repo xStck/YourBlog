@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import axios from "axios"
-import { Box, Button, InputLabel, TextField, Typography } from '@mui/material'
-axios.defaults.withCredentials = true
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from "axios";
+import { Box, Button, InputLabel, TextField, Typography } from '@mui/material';
+axios.defaults.withCredentials = true;
 
 const BlogDetail = () => {
   const navigator = useNavigate();
   const id = useParams().id;
   const [userInputs, setuserInputs] = useState();
-  const [correctTitle, setCorrectTitle] = useState(true)
-  const [correctDescription, setCorrectDescription] = useState(true)
-  var isCorrectValidation = false
+  const [correctTitle, setCorrectTitle] = useState(true);
+  const [correctDescription, setCorrectDescription] = useState(true);
+  var isCorrectValidation = false;
 
   const validation = (values) => {
-    setCorrectTitle(true)
-    setCorrectDescription(true)
-    isCorrectValidation = true
+    setCorrectTitle(true);
+    setCorrectDescription(true);
+    isCorrectValidation = true;
+
     if (values.title.trim() === '') {
-      setCorrectTitle(false)
-      isCorrectValidation = false
+      setCorrectTitle(false);
+      isCorrectValidation = false;
     }
+
     if (values.description.trim() === '') {
-      setCorrectDescription(false)
-      isCorrectValidation = false
+      setCorrectDescription(false);
+      isCorrectValidation = false;
     }
   }
 
@@ -35,28 +37,50 @@ const BlogDetail = () => {
   };
 
   const sendUpdateBlogRequest = async () => {
-    const response = await axios.put(`http://localhost:8080/api/blog/updateblog/${id}`, {
-      title: userInputs.title,
-      description: userInputs.description,
-    }, {
-      withCredentials: true
-    }).catch(error => console.log(error))
-    const responseData = await response.data
-    return responseData
+    try {
+      const response = await axios.put(`http://localhost:8080/api/blog/updateblog/${id}`, {
+        title: userInputs.title,
+        description: userInputs.description,
+      }, {
+        withCredentials: true
+      });
+
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     validation(userInputs);
+
     if (isCorrectValidation) {
-      sendUpdateBlogRequest().then(() => navigator("/userblogs"))
+      sendUpdateBlogRequest().then(() => navigator("/userblogs"));
     }
   };
 
   const fetchDetails = async () => {
-    const response = await axios.get(`http://localhost:8080/api/blog/${id}`, { withCredentials: true }).catch(error => console.log(error))
-    const responseData = await response.data
-    return responseData
+    try {
+      const response = await axios.get(`http://localhost:8080/api/blog/${id}`, { withCredentials: true });
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   };
 
   useEffect(() => {
@@ -65,7 +89,7 @@ const BlogDetail = () => {
         title: responseData.blog.title,
         description: responseData.blog.description,
       })
-    })
+    });
   }, [id]);
 
 

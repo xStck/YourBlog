@@ -15,32 +15,32 @@ function App() {
   const dispatcher = useDispatch();
 
   useEffect(() => {
-    if(localStorage.getItem("userId")){
-      dispatcher(authActions.login())
+    if (localStorage.getItem("userId")) {
+      dispatcher(authActions.login());
     }
-  },[dispatcher])
-  
+  }, [dispatcher]);
+
   return <React.Fragment>
     <header>
-      <Header/>
+      <Header />
     </header>
     <main>
       <Routes>
         {!isLoggedIn ? (
           <>
-          <Route path="/" element={<Navigate replace to="/login" />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/signup" element={<Auth />} />
-          <Route path="/allblogs" element={<Navigate replace to="/login" />} />
-          <Route path="/allblogs/add" element={<Navigate replace to="/login" />} />
-          <Route path="/userblogs" element={<Navigate replace to="/login" />} />
-          <Route path="/userblogs/:id" element={<Navigate replace to="/login" />} />
+            <Route path="/" element={<Navigate replace to="/login" />} />
+            <Route path="/login" element={<Auth />} />
+            <Route path="/signup" element={<Auth />} />
+            <Route path="/allblogs" element={<Navigate replace to="/login" />} />
+            <Route path="/allblogs/add" element={<Navigate replace to="/login" />} />
+            <Route path="/userblogs" element={<Navigate replace to="/login" />} />
+            <Route path="/userblogs/:id" element={<Navigate replace to="/login" />} />
           </>
         ) : (
           <>
             <Route path="/" element={<Navigate replace to="/allblogs" />} />
             <Route path="/login" element={<Navigate replace to="/allblogs" />} />
-            <Route path="/signup" element={<Navigate replace to="/allblogs" />}  />
+            <Route path="/signup" element={<Navigate replace to="/allblogs" />} />
             <Route path="/allblogs" element={<AllBlogs />} />
             <Route path="/allblogs/add" element={<AddBlog />} />
             <Route path="/userblogs" element={<UserBlog />} />
@@ -50,7 +50,7 @@ function App() {
         }
       </Routes>
     </main>
-  </React.Fragment>;
+  </React.Fragment>
 }
 
 export default App;

@@ -1,28 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import BlogCard from './BlogCard';
 import { Typography } from '@mui/material';
 axios.defaults.withCredentials = true;
 
 const UserBlog = () => {
   const userId = localStorage.getItem("userId");
-  const [userAndHisBlogs, setUserAndHisBlogs] = useState()
-  const [text, setText] = useState("")
+  const [userAndHisBlogs, setUserAndHisBlogs] = useState();
+  const [text, setText] = useState("");
   const sendRequest = async () => {
-    const response = await axios.get(`http://localhost:8080/api/blog/user/${userId}`, {withCredentials: true})
-      .catch(error => console.log(error));
-    const responseData = await response.data;
-    return responseData;
+    try {
+      const response = await axios.get(`http://localhost:8080/api/blog/user/${userId}`, { withCredentials: true });
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   };
 
   useEffect(() => {
     sendRequest()
       .then(responseData => {
-        setUserAndHisBlogs(responseData.userAndHisBlogs)
+        setUserAndHisBlogs(responseData.userAndHisBlogs);
         if (responseData.userAndHisBlogs.userBlogs.length > 0) {
-          setText("Twoje blogi")
+          setText("Twoje blogi");
         } else {
-          setText("Nie dodałeś/łaś jeszcze żadnego bloga")
+          setText("Nie dodałeś/łaś jeszcze żadnego bloga");
         }
       })
   }, []);

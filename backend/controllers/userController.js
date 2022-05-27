@@ -1,19 +1,42 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
+const Joi = require("joi")
+const passwordComplexity = require("joi-password-complexity")
+
+const signUpValidate = (data) => {
+    const schema = Joi.object({
+        userName: Joi.string().required().label("UserName"),
+        email: Joi.string().email().required().label("Email"),
+        password: passwordComplexity().required().label("Password"),
+    })
+    return schema.validate(data)
+}
+
+const logInValidate = (data) => {
+    const schema = Joi.object({
+        email: Joi.string().email().required().label("Email"),
+        password: passwordComplexity().required().label("Password"),
+    })
+    return schema.validate(data)
+}
 
 const signUp = async (req, res) => {
+    const { error } = signUpValidate(req.body)
+    if (error)
+        return res.status(400).send({ message: error.details[0].message })
+
     const { userName, email, password } = req.body;
     let existingUser;
 
     try {
         existingUser = await User.findOne({ email });
     } catch (err) {
-        return console.log(err);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (existingUser) {
-        return res.status(400).json({ message: "Użytkownik o podanym adresie e-mail już istnieje. Zaloguj się." });
+        return res.status(400).json({ message: "Użytkownik o podanym adresie e-mail już istnieje." });
     }
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -29,20 +52,24 @@ const signUp = async (req, res) => {
     try {
         await newUser.save();
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     return res.status(201).json({ newUser });
 }
 
 const logIn = async (req, res) => {
+    const { error } = logInValidate(req.body)
+    if (error)
+        return res.status(400).send({ message: error.details[0].message })
     const { email, password } = req.body;
+
     let existingUser;
 
     try {
         existingUser = await User.findOne({ email });
     } catch (err) {
-        return console.log(err);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!existingUser) {
@@ -77,12 +104,12 @@ const logOut = async (req, res) => {
     const token = cookies.split("=")[1];
 
     if (!token) {
-        res.status(404).json({ message: "Nie znaleziono tokena" });
+        return res.status(400).json({ message: error });
     }
 
     jwt.verify(String(token), process.env.JWT_SECRET_KEY, (error, user) => {
         if (error) {
-            res.statut(400).json({ message: "Zły token" });
+            return res.status(400).json({ message: error });
         }
         res.clearCookie(`${user.id}`);
         req.cookies[`${user.id}`] = "";

@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { authActions } from "../store";
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const dispatcher = useDispatch();
   const navigator = useNavigate();
-  const [correctUserName, setCorrectUserName] = useState(true)
-  const [correctEmail, setCorrectEmail] = useState(true)
-  const [correctPassword, setCorrectPassword] = useState(true)
-  var isCorrectValidation = false
+  const [correctUserName, setCorrectUserName] = useState(true);
+  const [correctEmail, setCorrectEmail] = useState(true);
+  const [correctPassword, setCorrectPassword] = useState(true);
+  var isCorrectValidation = false;
   var loginOrSignUp = useLocation().pathname;
 
   const [userInputs, setuserInputs] = useState({
@@ -24,21 +24,23 @@ const Auth = () => {
     const regexEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const regexPassword = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/; //min 1 cyfra, 1 mała litera, 1 duża litera, 8 znaków, 1 znak spejalny
     const regexUserName = /^[a-zA-Z0-9]+$/;
-
     setCorrectEmail(true);
     setCorrectUserName(true);
     setCorrectPassword(true);
     isCorrectValidation = true
+
     if (!regexUserName.test(values.userName) && loginOrSignUp === "/signup") {
-      setCorrectUserName(false)
-      isCorrectValidation = false
+      setCorrectUserName(false);
+      isCorrectValidation = false;
     }
+
     if (!regexEmail.test(values.email)) {
-      setCorrectEmail(false)
-      isCorrectValidation = false
+      setCorrectEmail(false);
+      isCorrectValidation = false;
     }
+
     if (!regexPassword.test(values.password)) {
-      setCorrectPassword(false)
+      setCorrectPassword(false);
       isCorrectValidation = false;
     }
   }
@@ -51,22 +53,53 @@ const Auth = () => {
     }));
   };
 
-  const sendAuthRequest = async (type = loginOrSignUp) => {
-    const response = await axios.post(`http://localhost:8080/api/user/${type}`, {
-      userName: userInputs.userName,
-      email: userInputs.email,
-      password: userInputs.password
-    }).catch(error => console.log(error));
-    const responseData = await response.data;
-    return responseData;
+  const sendLoginRequest = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8080/api/user/login`, {
+        email: userInputs.email,
+        password: userInputs.password
+      });
+
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
+  };
+
+  const sendSignUpRequest = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8080/api/user/signup`, {
+        userName: userInputs.userName,
+        email: userInputs.email,
+        password: userInputs.password
+      });
+
+      const responseData = await response.data;
+      return responseData;
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        window.alert(error.response.data.message)
+      }
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    validation(userInputs)
+    validation(userInputs);
     if (loginOrSignUp === "/login") {
       if (isCorrectValidation) {
-        sendAuthRequest("login")
+        sendLoginRequest()
           .then(responseData => {
             localStorage.setItem("userId", responseData.loggedUser._id);
           })
@@ -75,7 +108,7 @@ const Auth = () => {
       }
     } else {
       if (isCorrectValidation) {
-        sendAuthRequest("signup")
+        sendSignUpRequest()
           .then(() => navigator("/login"));
       }
     }

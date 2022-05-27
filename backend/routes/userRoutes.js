@@ -7,4 +7,5 @@ userRouter.post("/signup", signUp);
 userRouter.post("/login", logIn);
 userRouter.post("/logout", logOut);
 userRouter.get("/checktokenexpired", checkTokenExpired);
+
 module.exports = userRouter;

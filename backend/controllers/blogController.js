@@ -1,6 +1,25 @@
 const mongoose = require('mongoose');
 const Blog = require("../model/Blog");
 const User = require("../model/User");
+const Joi = require("joi")
+
+const blogAddValidate = (data) => {
+    const schema = Joi.object({
+        title: Joi.string().required().label("Title"),
+        description: Joi.string().required().label("Description"),
+        image: Joi.string().optional().allow('').label("Image"),
+        user: Joi.string().required().label("User"),
+    })
+    return schema.validate(data)
+}
+
+const blogUpdateValidate = (data) => {
+    const schema = Joi.object({
+        title: Joi.string().required().label("Title"),
+        description: Joi.string().required().label("Description"),
+    })
+    return schema.validate(data)
+}
 
 const getBlogs = async (req, res) => {
     let blogs;
@@ -8,7 +27,7 @@ const getBlogs = async (req, res) => {
     try {
         blogs = await Blog.find().populate("user");
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!blogs) {
@@ -19,13 +38,17 @@ const getBlogs = async (req, res) => {
 }
 
 const addNewBlog = async (req, res) => {
+    const { error } = blogAddValidate(req.body)
+    if (error)
+        return res.status(400).send({ message: error.details[0].message })
+
     const { title, description, image, user } = req.body;
     let registeredUser;
 
     try {
         registeredUser = await User.findById(user);
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!registeredUser) {
@@ -47,14 +70,16 @@ const addNewBlog = async (req, res) => {
         await registeredUser.save({ session });
         await session.commitTransaction();
     } catch (error) {
-        console.log(error);
-        return res.session(500).json({ message: "Nieoczekiwany błąd serwera w trakcie dodawania bloga" })
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     return res.status(200).json({ newBlog });
 }
 
 const updateBlog = async (req, res) => {
+    const { error } = blogUpdateValidate(req.body)
+    if (error)
+        return res.status(400).send({ message: error.details[0].message })
     const updatedBlogId = req.params.id;
     const { title, description } = req.body;
     let updatedBlog;
@@ -65,11 +90,11 @@ const updateBlog = async (req, res) => {
             description
         });
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!updatedBlog) {
-        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie wykonywania update bloga!" });
+        return res.status(409).json({ message: "Nie udało się zaktualizować bloga." });
     }
 
     return res.status(200).json({ updatedBlog });
@@ -82,7 +107,7 @@ const getBlogDetailsById = async (req, res) => {
     try {
         blog = await Blog.findById(blogId);
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!blog) {
@@ -99,7 +124,7 @@ const getUserBlogs = async (req, res) => {
     try {
         specificUserBlogs = await User.findById(userId).populate("userBlogs");
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!specificUserBlogs) {
@@ -118,14 +143,14 @@ const deleteBlog = async (req, res) => {
         await deletedBlog.user.userBlogs.pull(deletedBlog);
         await deletedBlog.user.save();
     } catch (error) {
-        return console.log(error);
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
     }
 
     if (!deletedBlog) {
-        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie usuwania bloga!" });
+        return res.status(409).json({ message: "Nie udało się usunąć bloga." });
     }
 
-    return res.status(200).json({ message: "Poprawnie usunięto blog o id: " + id });
+    return res.status(200).json({ message: "Poprawnie usunięto bloga" });
 }
 
 exports.getBlogs = getBlogs;
