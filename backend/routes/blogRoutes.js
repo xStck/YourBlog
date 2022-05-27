@@ -4,9 +4,9 @@ const { verifyToken } = require('../middleware/verifyToken');
 const blogRouter = express.Router();
 
 blogRouter.get("/", verifyToken, getBlogs);
-blogRouter.post("/addnewblog", verifyToken ,addNewBlog);
-blogRouter.put("/updateblog/:id", verifyToken ,updateBlog);
-blogRouter.get("/:id", getBlogDetailsById);
+blogRouter.post("/addnewblog", verifyToken, addNewBlog);
+blogRouter.put("/updateblog/:id", verifyToken, updateBlog);
+blogRouter.get("/:id", verifyToken, getBlogDetailsById);
 blogRouter.get("/user/:id", verifyToken, getUserBlogs);
 blogRouter.delete("/:id", verifyToken, deleteBlog);
 module.exports = blogRouter;

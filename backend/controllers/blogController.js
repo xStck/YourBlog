@@ -63,17 +63,16 @@ const updateBlog = async (req, res) => {
         updatedBlog = await Blog.findByIdAndUpdate(updatedBlogId, {
             title,
             description
-        })
+        });
     } catch (error) {
-        return console.log(error)
+        return console.log(error);
     }
 
     if (!updatedBlog) {
-        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie wykonywania update bloga!" })
+        return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie wykonywania update bloga!" });
     }
 
-    return res.status(200).json({ updatedBlog })
-
+    return res.status(200).json({ updatedBlog });
 }
 
 const getBlogDetailsById = async (req, res) => {
@@ -97,17 +96,17 @@ const getUserBlogs = async (req, res) => {
     const userId = req.params.id;
     let specificUserBlogs;
 
-    try{
+    try {
         specificUserBlogs = await User.findById(userId).populate("userBlogs");
-    }catch(error){
+    } catch (error) {
         return console.log(error);
     }
 
-    if(!specificUserBlogs){
-        return res.status(404).json({ message: "Nie znaleziono blogów użytkownika o id " + userId});
+    if (!specificUserBlogs) {
+        return res.status(404).json({ message: "Nie znaleziono blogów użytkownika o id " + userId });
     }
 
-    return res.status(200).json({userAndHisBlogs: specificUserBlogs});
+    return res.status(200).json({ userAndHisBlogs: specificUserBlogs });
 }
 
 const deleteBlog = async (req, res) => {
@@ -126,7 +125,7 @@ const deleteBlog = async (req, res) => {
         return res.status(500).json({ message: "Niespodziewany błąd serwera w trakcie usuwania bloga!" });
     }
 
-    return res.status(200).json({ message: "Poprawnie usunięto blog o id: " + id })
+    return res.status(200).json({ message: "Poprawnie usunięto blog o id: " + id });
 }
 
 exports.getBlogs = getBlogs;
