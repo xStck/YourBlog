@@ -1,6 +1,6 @@
 import './App.css';
 import Header from "./components/Header";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Auth from "./components/Auth";
 import AllBlogs from "./components/AllBlogs";
@@ -13,11 +13,13 @@ import { authActions } from './store';
 function App() {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const dispatcher = useDispatch();
+
   useEffect(() => {
     if(localStorage.getItem("userId")){
       dispatcher(authActions.login())
     }
   },[dispatcher])
+  
   return <React.Fragment>
     <header>
       <Header/>

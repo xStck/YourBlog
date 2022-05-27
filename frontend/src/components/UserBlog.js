@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import BlogCard from './BlogCard';
 import { Typography } from '@mui/material';
+axios.defaults.withCredentials = true;
 
 const UserBlog = () => {
   const userId = localStorage.getItem("userId");
   const [userAndHisBlogs, setUserAndHisBlogs] = useState()
-  const [blogsExist, setblogsExist] = useState()
   const [text, setText] = useState("")
   const sendRequest = async () => {
-    const response = await axios.get(`http://localhost:8080/api/blog/user/${userId}`)
+    const response = await axios.get(`http://localhost:8080/api/blog/user/${userId}`, {withCredentials: true})
       .catch(error => console.log(error));
     const responseData = await response.data;
     return responseData;
@@ -21,10 +21,8 @@ const UserBlog = () => {
         setUserAndHisBlogs(responseData.userAndHisBlogs)
         if (responseData.userAndHisBlogs.userBlogs.length > 0) {
           setText("Twoje blogi")
-          setblogsExist(true);
         } else {
           setText("Nie dodałeś/łaś jeszcze żadnego bloga")
-          setblogsExist(false);
         }
       })
   }, []);

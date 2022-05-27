@@ -4,26 +4,25 @@ import BlogCard from './BlogCard';
 import { Typography } from '@mui/material';
 axios.defaults.withCredentials = true
 const AllBlogs = () => {
-  const [allBlogs, setAllBlogs] = useState()
-  const [blogsExist, setblogsExist] = useState()
-  const [text, setText] = useState("")
+  const [allBlogs, setAllBlogs] = useState();
+  const [text, setText] = useState("");
+
   const sendBlogsRequest = async () => {
     const response = await axios.get("http://localhost:8080/api/blog",{
       withCredentials: true
     }).catch(error => console.log(error));
     const responseData = await response.data;
     return responseData;
-  }
+  };
 
   useEffect(() => {
     sendBlogsRequest().then(responseData => {
       setAllBlogs(responseData.blogs)
       if (responseData.blogs.length > 0) {
         setText("Blogi")
-        setblogsExist(true);
+        console.log(responseData.blogs)
       } else {
         setText("Nikt jeszcze nie dodał żadnego bloga")
-        setblogsExist(false);
       }
     });
   }, [])

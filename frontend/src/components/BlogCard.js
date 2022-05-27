@@ -4,8 +4,9 @@ import React from 'react'
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Box } from '@mui/system';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
+axios.defaults.withCredentials = true
 
 const BlogCard = ({ title, description, image, user, isUser, id }) => {
     const navigator = useNavigate();
@@ -16,7 +17,9 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
     };
 
     const sendDeleteRequest = async () => {
-        const response = await axios.delete(`http://localhost:8080/api/blog/${id}`)
+        const response = await axios.delete(`http://localhost:8080/api/blog/${id}`, {
+            withCredentials: true
+          })
             .catch(error => console.log(error));
 
         const responseData = await response.data;

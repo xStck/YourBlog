@@ -2,12 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
 import { Box, Button, InputLabel, TextField, Typography } from '@mui/material'
+axios.defaults.withCredentials = true
 
 const BlogDetail = () => {
   const navigator = useNavigate();
-  const [thisBlog, setthisBlog] = useState();
   const id = useParams().id;
   const [userInputs, setuserInputs] = useState();
+  const [correctTitle, setCorrectTitle] = useState(true)
+  const [correctDescription, setCorrectDescription] = useState(true)
+  var isCorrectValidation = false
+
+  const validation = (values) => {
+    setCorrectTitle(true)
+    setCorrectDescription(true)
+    isCorrectValidation = true
+    if (values.title.trim() === '') {
+      setCorrectTitle(false)
+      isCorrectValidation = false
+    }
+    if (values.description.trim() === '') {
+      setCorrectDescription(false)
+      isCorrectValidation = false
+    }
+  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,6 +38,8 @@ const BlogDetail = () => {
     const response = await axios.put(`http://localhost:8080/api/blog/updateblog/${id}`, {
       title: userInputs.title,
       description: userInputs.description,
+    }, {
+      withCredentials: true
     }).catch(error => console.log(error))
     const responseData = await response.data
     return responseData
@@ -28,18 +47,20 @@ const BlogDetail = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    sendUpdateBlogRequest().then(() => navigator("/userblogs"))
+    validation(userInputs);
+    if (isCorrectValidation) {
+      sendUpdateBlogRequest().then(() => navigator("/userblogs"))
+    }
   };
 
   const fetchDetails = async () => {
-    const response = await axios.get(`http://localhost:8080/api/blog/${id}`).catch(error => console.log(error))
+    const response = await axios.get(`http://localhost:8080/api/blog/${id}`, { withCredentials: true }).catch(error => console.log(error))
     const responseData = await response.data
     return responseData
   };
 
   useEffect(() => {
     fetchDetails().then(responseData => {
-      setthisBlog(responseData.blog)
       setuserInputs({
         title: responseData.blog.title,
         description: responseData.blog.description,
@@ -65,9 +86,20 @@ const BlogDetail = () => {
               Edycja bloga
             </Typography>
             <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }} >Tytuł</InputLabel>
-            <TextField required type="text" placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />
+            <TextField type="text" placeholder="Tytuł" onChange={handleChange} margin="normal" name="title" value={userInputs.title} variant="outlined" />
+            {!correctTitle && (
+              <Typography variant="h6" sx={{ color: 'red' }} textAlign="left">
+                Tytuł jest wymagany.
+              </Typography>
+            )}
             <InputLabel sx={{ mb: 1, mt: 2, fontSize: "20px" }}>Opis</InputLabel>
-            <TextField required type="text" placeholder="Opis" onChange={handleChange} margin="normal" name="description" value={userInputs.description} variant="outlined" />
+            <TextField type="text" placeholder="Opis" onChange={handleChange} margin="normal" name="description" value={userInputs.description} variant="outlined" />
+            {!correctDescription && (
+              <Typography variant="h6" sx={{ color: 'red' }} textAlign="left">
+                Opis jest wymagany.
+              </Typography>
+
+            )}
             <Button type="submit" variant="contained" mode="dark" sx={{ margin: 1, background: "black" }}>Dodaj</Button>
           </Box>
         </form>

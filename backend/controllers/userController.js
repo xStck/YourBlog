@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET_KEY = "secretKey";
 
 const getUsers = async (req, res) => {
     let users;
@@ -73,13 +72,13 @@ const logIn = async (req, res) => {
         return res.status(400).json({ message: " Błędny email lub hasło!" })
     }
 
-    const token = jwt.sign({id: existingUser._id}, JWT_SECRET_KEY, {
-        expiresIn: "40s"
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "1h"
     })
 
-    res.cookie(String(existingUser._id), token,{
+    res.cookie(String(existingUser._id), token, {
         path: '/',
-        maxAge: 40000,
+        maxAge: 3600000,
         httpOnly: true,
         sameSite: 'lax'
     })
@@ -87,45 +86,36 @@ const logIn = async (req, res) => {
     return res.status(200).json({ message: "Zalogowano", loggedUser: existingUser, token })
 }
 
-const verifyToken = (req, res, next) => {
+const logOut = async (req, res) => {
     const cookies = req.headers.cookie;
     const token = cookies.split("=")[1];
-    console.log(token);
-
-    if(!token){
-        res.status(404).json({message: "Nie znaleziono tokena"})
+    if (!token) {
+        res.status(404).json({ message: "Nie znaleziono tokena" })
     }
-    jwt.verify(String(token), JWT_SECRET_KEY, (error, user)=>{
-        if(error){
-            res.statut(400).json({message:"Zły token"})    
+    jwt.verify(String(token), process.env.JWT_SECRET_KEY, (error, user) => {
+        if (error) {
+            res.statut(400).json({ message: "Zły token" })
         }
-        console.log(user.id)
-        req.id = user.id
-    })
-    next();
-
+        res.clearCookie(`${user.id}`)
+        req.cookies[`${user.id}`] = "";
+        return res.status(200).json({ message: "Poprawnie się wylogowano" })
+    });
 }
 
-const getUser = async (req, res, next) => {
-    const userId = req.id;
-    let user;
-    try {
-      user = await User.findById(userId, "-password");
-    } catch (err) {
-      return new Error(err);
+const checkTokenExpired = async (req, res) => {
+    const cookies = req.headers.cookie;
+    if (!cookies) {
+        return res.status(200).json({ expired: true })
     }
-    if (!user) {
-      return res.status(404).json({ messsage: "User Not FOund" });
-    }
-    return res.status(200).json({ user });
-  };
+    return res.status(200).json({ expired: false })
 
-
-exports.getUser = getUser;
+}
+exports.checkTokenExpired = checkTokenExpired;
+exports.logOut = logOut;
 exports.signUp = signUp;
 exports.logIn = logIn;
 exports.getUsers = getUsers;
-exports.verifyToken = verifyToken;
+
 
 
 
