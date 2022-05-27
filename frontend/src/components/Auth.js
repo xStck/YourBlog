@@ -135,7 +135,7 @@ const Auth = () => {
           }
           {!correctUserName && (
             <Typography variant="h6" sx={{ color: 'red' }} textAlign="left">
-              Podano nieprawidłową nazwę użytkownika.
+              Imię jest wymagane
             </Typography>
           )}
           <TextField name="email" onChange={handleChange} value={userInputs.email} placeholder="Email" type={"email"} margin="normal" variant="standard" />
