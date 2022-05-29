@@ -10,7 +10,7 @@ const signUpValidate = (data) => {
         email: Joi.string().email().required().label("Email"),
         password: passwordComplexity().required().label("Password"),
     })
-    return schema.validate(data)
+    return schema.validate(data);
 }
 
 const logInValidate = (data) => {
@@ -18,13 +18,13 @@ const logInValidate = (data) => {
         email: Joi.string().email().required().label("Email"),
         password: passwordComplexity().required().label("Password"),
     })
-    return schema.validate(data)
+    return schema.validate(data);
 }
 
 const signUp = async (req, res) => {
-    const { error } = signUpValidate(req.body)
+    const { error } = signUpValidate(req.body);
     if (error)
-        return res.status(400).send({ message: error.details[0].message })
+        return res.status(400).send({ message: error.details[0].message });
 
     const { userName, email, password } = req.body;
     let existingUser;
@@ -52,16 +52,17 @@ const signUp = async (req, res) => {
     try {
         await newUser.save();
     } catch (error) {
-        return res.session(500).json({ message: "Wewnętrzny błąd serwera." })
+        return res.session(500).json({ message: "Wewnętrzny błąd serwera." });
     }
 
     return res.status(201).json({ newUser });
 }
 
 const logIn = async (req, res) => {
-    const { error } = logInValidate(req.body)
+    const { error } = logInValidate(req.body);
     if (error)
         return res.status(400).send({ message: error.details[0].message })
+        
     const { email, password } = req.body;
 
     let existingUser;

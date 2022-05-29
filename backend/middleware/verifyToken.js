@@ -15,7 +15,7 @@ const verifyToken = (req, res, next) => {
         })
         next();
     } catch (error) {
-        return res.status(404).json({ message: "Nie masz dostępu do tej funkcji." })
+        return res.status(404).json({ message: "Nie masz dostępu do tej funkcji." });
     }
 }
 

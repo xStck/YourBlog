@@ -62,7 +62,7 @@ const BlogCard = ({ title, description, image, user, isUser, id }) => {
             {image &&
                 <CardMedia
                     component="img"
-                    height="194"
+                    height="auto"
                     image={image}
                     alt={image}
                 />
