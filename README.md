@@ -1,6 +1,6 @@
 # YourBlog
 
-Used technologies
+Used technologies<br>
 -Backend: node.js
 -Frontend: React
 -Database: MongoDB
