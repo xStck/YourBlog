@@ -12,7 +12,7 @@ The project is a service that allows you to publish posts, which is possible onl
 <br>
 <h2 align="center">For the project to work properly, it is necessary to:</h2><br>
 1. Go to backend folder and install npms: npm install<br>
-2. Go to frontent folder and install npms: npm instakk<br>
+2. Go to frontent folder and install npms: npm install<br>
 3. Run server (in backend folder): npm start
 4. Run client (in frontend folder): npm start
 
